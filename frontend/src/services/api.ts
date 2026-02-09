@@ -25,8 +25,18 @@ export interface Note {
 
 export const notesApi = {
   getAll: async (): Promise<Note[]> => {
-    const response = await api.get("/api/notes");
-    return response.data;
+    try {
+      const response = await api.get("/api/notes");
+      // Ensure we always return an array
+      if (Array.isArray(response.data)) {
+        return response.data;
+      }
+      console.error("API did not return an array:", response.data);
+      return [];
+    } catch (error) {
+      console.error("Failed to fetch notes:", error);
+      throw error;
+    }
   },
 
   create: async (title: string, content: string): Promise<Note> => {
