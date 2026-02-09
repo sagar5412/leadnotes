@@ -17,9 +17,15 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:3000",
+  process.env.FRONTEND_URL, // Add your Vercel URL in Railway env vars
+].filter(Boolean) as string[];
+
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://localhost:3000"],
+    origin: allowedOrigins,
     credentials: true,
   }),
 );
