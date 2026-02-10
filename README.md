@@ -4,19 +4,19 @@ A full-stack Lead Notes application with Google authentication, note management,
 
 ## Tech Stack
 
-- **Frontend**: React + TypeScript + Vite
+- **Frontend**: React + TypeScript + Vite + Tailwind CSS
 - **Backend**: Node.js + Express + TypeScript
 - **Database**: MongoDB (Mongoose)
 - **Auth**: Firebase Auth (Google Sign-In)
 - **API Client**: Axios
-- **Integration**: Nodemailer (email notifications on note creation)
+- **Email Service**: Resend
 
 ## Features
 
-- Google Sign-In authentication
-- Create, list, and delete notes
-- Email notification when a note is created
-- Modern dark theme UI
+- 🔐 Google Sign-In authentication
+- 📝 Create, list, and delete notes
+- 📧 Email notification via Resend when a note is created
+- 🎨 Modern dark theme UI with Tailwind CSS
 
 ## Project Structure
 
@@ -27,8 +27,9 @@ A full-stack Lead Notes application with Google authentication, note management,
 │   │   ├── middleware/      # Auth middleware
 │   │   ├── models/          # Mongoose models
 │   │   ├── routes/          # API routes
-│   │   ├── services/        # Email service
+│   │   ├── services/        # Email service (Resend)
 │   │   └── index.ts         # Entry point
+│   ├── railway.json         # Railway deployment config
 │   └── package.json
 ├── frontend/
 │   ├── src/
@@ -36,6 +37,7 @@ A full-stack Lead Notes application with Google authentication, note management,
 │   │   ├── config/          # Firebase config
 │   │   ├── services/        # API service
 │   │   └── App.tsx
+│   ├── vercel.json          # Vercel deployment config
 │   └── package.json
 └── README.md
 ```
@@ -45,7 +47,7 @@ A full-stack Lead Notes application with Google authentication, note management,
 - Node.js v18+
 - MongoDB Atlas account
 - Firebase project with Google Sign-In enabled
-- Gmail account with App Password for Nodemailer
+- Resend account (for emails)
 
 ## Setup Instructions
 
@@ -53,7 +55,7 @@ A full-stack Lead Notes application with Google authentication, note management,
 
 ```bash
 git clone <repository-url>
-cd wellfound_project_1
+cd lead_note
 ```
 
 ### 2. Backend Setup
@@ -63,7 +65,7 @@ cd backend
 npm install
 ```
 
-Create `.env` file (see `.env.example`):
+Create `.env` file in `backend/`:
 
 ```env
 PORT=5000
@@ -71,8 +73,8 @@ MONGODB_URI=your_mongodb_connection_string
 FIREBASE_PROJECT_ID=your_firebase_project_id
 FIREBASE_CLIENT_EMAIL=your_firebase_service_account_email
 FIREBASE_PRIVATE_KEY="your_firebase_private_key"
-SMTP_EMAIL=your_gmail_address
-SMTP_PASSWORD=your_gmail_app_password
+RESEND_API_KEY=re_123456789
+FRONTEND_URL=http://localhost:5173
 ```
 
 Start the backend:
@@ -81,8 +83,6 @@ Start the backend:
 npm run dev
 ```
 
-Backend runs on `http://localhost:5000`
-
 ### 3. Frontend Setup
 
 ```bash
@@ -90,7 +90,7 @@ cd frontend
 npm install
 ```
 
-Create `.env` file (see `.env.example`):
+Create `.env` file in `frontend/`:
 
 ```env
 VITE_FIREBASE_API_KEY=your_firebase_api_key
@@ -108,7 +108,28 @@ Start the frontend:
 npm run dev
 ```
 
-Frontend runs on `http://localhost:5173`
+## Deployment
+
+### Backend (Railway)
+
+1. Connect your GitHub repository to Railway.
+2. Select the repository and set the root directory to `backend` (if generic) or let Railway detect `railway.json`.
+3. Add the following **Environment Variables** in Railway:
+   - `MONGODB_URI`
+   - `FIREBASE_PROJECT_ID`
+   - `FIREBASE_CLIENT_EMAIL`
+   - `FIREBASE_PRIVATE_KEY` (Paste the full key including `-----BEGIN...`)
+   - `RESEND_API_KEY`
+   - `FRONTEND_URL` (e.g., `https://your-frontend.vercel.app`)
+4. Railway will automatically deploy.
+
+### Frontend (Vercel)
+
+1. Import the project into Vercel and select the `frontend` directory as the root.
+2. Add the following **Environment Variables** in Vercel:
+   - `VITE_API_URL` (Your Railway Backend URL, e.g., `https://your-backend.up.railway.app`)
+   - All `VITE_FIREBASE_*` variables from your local `.env`.
+3. Deploy!
 
 ## API Endpoints
 
@@ -118,29 +139,3 @@ Frontend runs on `http://localhost:5173`
 | POST   | /notes      | Create a new note   | Yes  |
 | GET    | /notes      | List user's notes   | Yes  |
 | DELETE | /notes/:id  | Delete a note by ID | Yes  |
-
-## Environment Variables
-
-### Backend
-
-| Variable              | Description                          |
-| --------------------- | ------------------------------------ |
-| PORT                  | Server port (default: 5000)          |
-| MONGODB_URI           | MongoDB connection string            |
-| FIREBASE_PROJECT_ID   | Firebase project ID                  |
-| FIREBASE_CLIENT_EMAIL | Firebase service account email       |
-| FIREBASE_PRIVATE_KEY  | Firebase private key (with newlines) |
-| SMTP_EMAIL            | Gmail address for sending emails     |
-| SMTP_PASSWORD         | Gmail App Password                   |
-
-### Frontend
-
-| Variable                          | Description             |
-| --------------------------------- | ----------------------- |
-| VITE_FIREBASE_API_KEY             | Firebase API key        |
-| VITE_FIREBASE_AUTH_DOMAIN         | Firebase auth domain    |
-| VITE_FIREBASE_PROJECT_ID          | Firebase project ID     |
-| VITE_FIREBASE_STORAGE_BUCKET      | Firebase storage bucket |
-| VITE_FIREBASE_MESSAGING_SENDER_ID | Firebase messaging ID   |
-| VITE_FIREBASE_APP_ID              | Firebase app ID         |
-| VITE_API_URL                      | Backend API URL         |
