@@ -16,6 +16,10 @@ const options: swaggerJsdoc.Options = {
         url: "http://localhost:5000",
         description: "Development server",
       },
+      {
+        url: "https://leadnotes-production.up.railway.app",
+        description: "Production server",
+      },
     ],
     components: {
       securitySchemes: {

@@ -133,6 +133,8 @@ npm run dev
 
 ## API Endpoints
 
+Full API documentation is available at `/api-docs` (e.g., `http://localhost:5000/api-docs` or `https://your-backend.up.railway.app/api-docs`).
+
 | Method | Endpoint    | Description         | Auth |
 | ------ | ----------- | ------------------- | ---- |
 | GET    | /api/health | Health check        | No   |
